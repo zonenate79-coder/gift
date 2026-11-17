@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>A Special Surprise for You ✨</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sound Effects & BGM Control -->
+  <button id="soundToggleBtn" class="sound-toggle" aria-label="Toggle Sound">
+    <span id="soundIcon">🎵</span>
+  </button>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <main class="app-container">
+    <!-- STAGE 1: The Intro Question with Local Clean Video -->
+    <section id="stage1" class="stage active">
+      <div class="card stage-card">
+        <div class="video-container">
+          <!-- Cool Floating Text with NO background -->
+          <div class="reply-me-text">Reply me</div>
+          <video id="introVideo" class="bear-video" src="assets/intro.mp4" autoplay loop muted playsinline></video>
+        </div>
+
+        <h1 id="questionTitle" class="main-question">Do you love me?</h1>
+
+        <div class="interactive-buttons-area" id="buttonsArea">
+          <button id="yesBtn" class="btn btn-yes">
+            <span class="btn-text">Yes</span>
+          </button>
+          <button id="noBtn" class="btn btn-no">
+            <span id="noBtnText">No</span>
+          </button>
+        </div>
+        <p class="hint-text" id="playfulHint">Tip: Try clicking "No"... if you can! 😉</p>
+      </div>
+    </section>
+
+    <!-- STAGE 2: 3D Bouncing Heart Loader & Tight Bear Hug Reveal -->
+    <section id="stage2" class="stage">
+      <div class="card stage-card">
+        <!-- Pure CSS 3D Bouncing Heart Loader from the video -->
+        <div class="loader-box" id="heartLoaderBox">
+          <div class="cssload-main">
+            <div class="cssload-heart">
+              <span class="cssload-heartL"></span>
+              <span class="cssload-heartR"></span>
+              <span class="cssload-square"></span>
+            </div>
+            <div class="cssload-shadow"></div>
+          </div>
+        </div>
+
+        <!-- The Big Bear Hug Reveal (Local Clean Video) -->
+        <div class="hug-reveal-box" id="hugBox">
+          <div class="video-container">
+            <video id="hugVideo" class="bear-video" src="assets/hug.mp4" loop muted playsinline></video>
+          </div>
+          <h2 class="hug-title">I knew it 😍!</h2>
+          <p class="hug-subtitle">Today is all about celebrating YOU! ✨</p>
+          <button id="goToBirthdayBtn" class="btn btn-celebrate">
+            <span>Open Birthday Surprise 🎁</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 3: The Universal Birthday Celebration -->
+    <section id="stage3" class="stage">
+      <div class="card stage-card bday-card">
+        <div class="bday-badge">🎂 SPECIAL CELEBRATION</div>
+        
+        <h1 id="bdayTitle" class="bday-main-title">Happy Birthday! 🎉</h1>
+        
+        <p class="bday-text" id="bdayMessage">
+          Wishing you a wonderful day filled with endless joy, big smiles, and sweet moments! May this new chapter bring you everything your heart desires and more. ✨
+        </p>
+
+        <!-- Interactive Birthday Cake with Blow-out Candles -->
+        <div class="cake-container" id="cakeContainer" title="Click to blow out candles!">
+          <div class="candles-row">
+            <!-- Candle 1 -->
+            <div class="candle" id="candle1">
+              <div class="flame"></div>
+              <div class="wick"></div>
+              <div class="candle-stick candle-blue"></div>
+            </div>
+            <!-- Candle 2 -->
+            <div class="candle" id="candle2">
+              <div class="flame"></div>
+              <div class="wick"></div>
+              <div class="candle-stick candle-pink"></div>
+            </div>
+            <!-- Candle 3 -->
+            <div class="candle" id="candle3">
+              <div class="flame"></div>
+              <div class="wick"></div>
+              <div class="candle-stick candle-yellow"></div>
+            </div>
+          </div>
+          
+          <!-- Cake Layers -->
+          <div class="cake-frosting-top">
+            <span class="strawberry">🍓</span>
+            <span class="strawberry">🍒</span>
+            <span class="strawberry">🍓</span>
+          </div>
+          <div class="cake-tier cake-tier-top"></div>
+          <div class="cake-cream-middle"></div>
+          <div class="cake-tier cake-tier-bottom"></div>
+          <div class="cake-plate"></div>
+        </div>
+
+        <div class="wish-instruction" id="wishInstruction">
+          ✨ <span id="wishText">Make a wish & <strong>tap the cake</strong> to blow the candles!</span> ✨
+        </div>
+
+        <div id="wishGrantedMessage" class="wish-granted hidden">
+          🌟 <strong>Wish made!</strong> May all your dreams come true! 💖
+        </div>
+
+        <!-- Replay Action Button -->
+        <div class="bday-actions">
+          <button id="replayBtn" class="btn btn-secondary">
+            <span>Play Again 🔄</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

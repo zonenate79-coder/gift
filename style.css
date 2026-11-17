@@ -1,0 +1,647 @@
+/* ==========================================================================
+   Birthday Surprise & Interactive Web Gift (Clean Local Video Edition)
+   ========================================================================== */
+
+:root {
+  --primary-pink: #ff2a6d;
+  --primary-hover: #e0245e;
+  --soft-pink: #fff0f5;
+  --accent-yellow: #fcd34d;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --bg-gradient: linear-gradient(135deg, #fff5f7 0%, #ffffff 50%, #fff1f5 100%);
+  --card-bg: rgba(255, 255, 255, 0.98);
+  --card-shadow: 0 20px 45px -15px rgba(255, 42, 109, 0.15), 0 0 1px 1px rgba(0, 0, 0, 0.04);
+  --border-radius: 28px;
+  --font-heading: 'Quicksand', 'Fredoka', cursive, sans-serif;
+  --font-body: 'Nunito', 'Quicksand', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-dark);
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
+  padding: 16px;
+}
+
+/* Ambient subtle background glow */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(50px);
+  opacity: 0.45;
+  animation: floatOrb 12s ease-in-out infinite alternate;
+}
+
+body::before {
+  width: 280px;
+  height: 280px;
+  background: #fbcfe8;
+  top: -40px;
+  left: -40px;
+}
+
+body::after {
+  width: 320px;
+  height: 320px;
+  background: #fef08a;
+  bottom: -60px;
+  right: -60px;
+  animation-delay: -6s;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, 30px) scale(1.1); }
+}
+
+/* Sound Toggle Button */
+.sound-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 42, 109, 0.2);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sound-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* Confetti Canvas */
+#confettiCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 90;
+}
+
+/* App Container */
+.app-container {
+  width: 100%;
+  max-width: 430px;
+  position: relative;
+  z-index: 10;
+  margin: auto;
+}
+
+/* Stage Card Layout */
+.stage {
+  display: none;
+  opacity: 0;
+  transform: scale(0.96) translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stage.active {
+  display: block;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+  overflow: visible;
+}
+
+/* Video Container & Bear Video */
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto 10px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bear-video {
+  width: 100%;
+  max-height: 220px;
+  display: block;
+  border-radius: 20px;
+  object-fit: contain;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Cool Floating "Reply me" Text (NO background, cool, readable & stylish) */
+.reply-me-text {
+  font-family: var(--font-heading);
+  font-size: 1.38rem;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+  display: inline-block;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  animation: coolFloat 2.2s ease-in-out infinite alternate;
+  user-select: none;
+}
+
+@keyframes coolFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+/* Typography */
+.main-question {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 10px;
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+
+.hint-text {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-top: 24px;
+  font-weight: 600;
+}
+
+/* Buttons Area */
+.interactive-buttons-area {
+  position: relative;
+  width: 100%;
+  min-height: 85px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.btn {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 12px 34px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.btn-yes {
+  background: #ff2a6d;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(255, 42, 109, 0.38);
+  min-width: 105px;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s, background 0.2s;
+  z-index: 2;
+}
+
+.btn-yes:hover {
+  transform: scale(1.06);
+  background: #ff1259;
+  box-shadow: 0 8px 24px rgba(255, 42, 109, 0.5);
+}
+
+/* The Evasive "No" Button - Stays Visible & Slides/Hops */
+.btn-no {
+  background: #ff2a6d;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(255, 42, 109, 0.28);
+  min-width: 95px;
+  position: relative;
+  z-index: 10;
+  /* Smooth sliding & hopping animation */
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   STAGE 2: Pure CSS 3D Bouncing Heart Loader
+   ========================================================================== */
+.loader-box {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 50px 0;
+}
+
+.cssload-main {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto;
+}
+
+.cssload-main * {
+  font-size: 32px;
+}
+
+.cssload-heart {
+  animation: cssload-heart 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+  top: 50%;
+  content: "";
+  left: 50%;
+  position: absolute;
+}
+
+.cssload-heartL {
+  width: 1em;
+  height: 1em;
+  border: 1px solid #ff1744;
+  background-color: #ff1744;
+  content: "";
+  position: absolute;
+  display: block;
+  border-radius: 100%;
+  animation: cssload-heartL 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+  transform: translate(-15px, -15px);
+}
+
+.cssload-heartR {
+  width: 1em;
+  height: 1em;
+  border: 1px solid #ff1744;
+  background-color: #ff1744;
+  content: "";
+  position: absolute;
+  display: block;
+  border-radius: 100%;
+  transform: translate(15px, -15px);
+  animation: cssload-heartR 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+}
+
+.cssload-square {
+  width: 1em;
+  height: 1em;
+  border: 1px solid #ff1744;
+  background-color: #ff1744;
+  position: relative;
+  display: block;
+  transform: scale(1) rotate(-45deg);
+  animation: cssload-square 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+}
+
+.cssload-shadow {
+  top: 60px;
+  left: 50%;
+  content: "";
+  position: absolute;
+  display: block;
+  width: 1.5em;
+  height: 0.35em;
+  background-color: rgba(215, 215, 215, 0.7);
+  border-radius: 50%;
+  animation: cssload-shadow 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+  transform: translate(-50%, 0);
+}
+
+@keyframes cssload-square {
+  50% {
+    border-radius: 100%;
+    transform: scale(0.5) rotate(-45deg);
+  }
+}
+
+@keyframes cssload-heart {
+  50% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(720deg);
+  }
+}
+
+@keyframes cssload-heartL {
+  60% {
+    transform: scale(0.4);
+  }
+}
+
+@keyframes cssload-heartR {
+  40% {
+    transform: scale(0.4);
+  }
+}
+
+@keyframes cssload-shadow {
+  50% {
+    transform: translate(-50%, 0) scale(0.5);
+    background-color: rgba(235, 235, 235, 0.4);
+  }
+}
+
+/* Hug Reveal */
+.hug-reveal-box {
+  display: none;
+  animation: fadeInPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeInPop {
+  0% { opacity: 0; transform: scale(0.88); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.hug-title {
+  font-family: var(--font-heading);
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 14px;
+  margin-bottom: 8px;
+}
+
+.hug-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.btn-celebrate {
+  background: linear-gradient(135deg, #ff2a6d, #f43f5e);
+  color: white;
+  width: 100%;
+  padding: 15px 24px;
+  font-size: 1.15rem;
+  box-shadow: 0 10px 25px rgba(255, 42, 109, 0.35);
+}
+
+.btn-celebrate:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* ==========================================================================
+   STAGE 3: Birthday Celebration Card
+   ========================================================================== */
+.bday-card {
+  padding: 36px 24px;
+}
+
+.bday-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #e11d48;
+  background: #ffe4e6;
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.bday-main-title {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  color: #1e293b;
+  margin-bottom: 12px;
+  line-height: 1.15;
+}
+
+.bday-text {
+  font-size: 1.02rem;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+/* Cake & Candle System */
+.cake-container {
+  width: 220px;
+  margin: 0 auto 20px auto;
+  position: relative;
+  cursor: pointer;
+  padding-top: 40px;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cake-container:hover {
+  transform: scale(1.04);
+}
+
+.candles-row {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: -4px;
+  position: relative;
+  z-index: 10;
+}
+
+.candle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.flame {
+  width: 12px;
+  height: 18px;
+  background: radial-gradient(ellipse at bottom, #fff 0%, #ffde59 40%, #ff5e36 90%);
+  border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+  box-shadow: 0 0 12px rgba(255, 170, 0, 0.8), 0 0 20px rgba(255, 90, 0, 0.5);
+  animation: flicker 1s infinite alternate ease-in-out;
+  transform-origin: center bottom;
+  margin-bottom: -2px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.candle.blown .flame {
+  opacity: 0;
+  transform: scale(0.2) translateY(-10px);
+}
+
+@keyframes flicker {
+  0% { transform: scale(1) rotate(-2deg); }
+  50% { transform: scale(1.08, 0.95) rotate(3deg); }
+  100% { transform: scale(0.95, 1.05) rotate(-1deg); }
+}
+
+.wick {
+  width: 2px;
+  height: 6px;
+  background: #334155;
+}
+
+.candle-stick {
+  width: 10px;
+  height: 32px;
+  border-radius: 4px;
+}
+
+.candle-blue {
+  background: repeating-linear-gradient(45deg, #38bdf8, #38bdf8 6px, #ffffff 6px, #ffffff 12px);
+}
+.candle-pink {
+  background: repeating-linear-gradient(45deg, #f43f5e, #f43f5e 6px, #ffffff 6px, #ffffff 12px);
+}
+.candle-yellow {
+  background: repeating-linear-gradient(45deg, #facc15, #facc15 6px, #ffffff 6px, #ffffff 12px);
+}
+
+/* Cake Layers */
+.cake-frosting-top {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: -6px;
+  position: relative;
+  z-index: 5;
+  font-size: 1.1rem;
+}
+
+.cake-tier-top {
+  width: 140px;
+  height: 36px;
+  background: #fdf2f8;
+  border: 3px solid #fbcfe8;
+  border-radius: 12px 12px 6px 6px;
+  margin: 0 auto;
+  box-shadow: inset 0 -4px 0 #f472b6;
+}
+
+.cake-cream-middle {
+  width: 170px;
+  height: 10px;
+  background: #ffffff;
+  border-radius: 5px;
+  margin: -4px auto 0 auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.cake-tier-bottom {
+  width: 180px;
+  height: 48px;
+  background: #fce7f3;
+  border: 3px solid #f9a8d4;
+  border-radius: 14px 14px 8px 8px;
+  margin: -2px auto 0 auto;
+  box-shadow: inset 0 -6px 0 #ec4899;
+}
+
+.cake-plate {
+  width: 215px;
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  margin: 3px auto 0 auto;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+/* Wish instructions & result */
+.wish-instruction {
+  font-size: 0.94rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 18px;
+  transition: opacity 0.3s ease;
+}
+
+.wish-granted {
+  font-size: 1.05rem;
+  color: #059669;
+  background: #d1fae5;
+  padding: 10px 16px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  display: inline-block;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bday-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.btn-secondary {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  font-size: 1.05rem;
+  padding: 12px 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.btn-secondary:hover {
+  background: #f1f5f9;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+  .card {
+    padding: 28px 18px;
+    border-radius: 22px;
+  }
+  .main-question {
+    font-size: 1.95rem;
+  }
+  .bday-main-title {
+    font-size: 2.1rem;
+  }
+  .btn {
+    padding: 12px 28px;
+    font-size: 1.1rem;
+  }
+  .reply-me-text {
+    font-size: 1.25rem;
+  }
+}
